@@ -289,17 +289,48 @@ const resizeWindow = () => {
   resizeCamera();
   renderer.setSize(resolution.x, resolution.y);
 }
+// Create video element and load video
+const video = document.getElementById('background-video');
+
+// Create video texture
+const videoTexture = new THREE.VideoTexture(video);
+videoTexture.minFilter = THREE.LinearFilter;  // Set texture filter
+videoTexture.magFilter = THREE.LinearFilter;
+videoTexture.format = THREE.RGBFormat;  // Use RGB format for background video
+
+// Create a large plane geometry for the background
+const geometry = new THREE.PlaneGeometry(2000, 1000);  // Set large dimensions to cover the screen
+const material = new THREE.MeshBasicMaterial({
+  map: videoTexture,
+  side: THREE.DoubleSide, // Make sure the texture shows on both sides of the plane
+});
+const plane = new THREE.Mesh(geometry, material);
+
+// Set the plane position far behind other objects
+plane.position.z = -1000;
+
+// Add the plane to the scene as the background
+scene.add(plane);
+
+// Update the texture in the render loop
 const render = () => {
   const time = clock.getDelta();
-  for (var i = 0; i < butterflies.length; i++) {
+  videoTexture.needsUpdate = true;  // Ensure the video texture is updated each frame
+
+  // Render butterflies or any other objects in the scene
+  for (let i = 0; i < butterflies.length; i++) {
     butterflies[i].render(renderer, time);
   }
+
   renderer.render(scene, camera);
-}
+};
+
+// Start the render loop
 const renderLoop = () => {
   render();
   requestAnimationFrame(renderLoop);
-}
+};
+
 const on = () => {
   window.addEventListener('resize', debounce(resizeWindow), 1000);
 }
