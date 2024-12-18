@@ -239,6 +239,20 @@ const resolution = {
 };
 
 const canvas = document.getElementById('canvas-webgl');
+canvas.addEventListener('touchstart', (event) => {
+ // Handle touch start logic
+ console.log('Touch start', event.touches[0]);
+});
+
+canvas.addEventListener('touchmove', (event) => {
+ // Handle touch move logic
+ console.log('Touch move', event.touches[0]);
+});
+
+canvas.addEventListener('touchend', (event) => {
+ // Handle touch end logic
+ console.log('Touch end');
+});
 const renderer = new THREE.WebGLRenderer({
   antialias: false,
   canvas: canvas,
@@ -295,14 +309,23 @@ const on = () => {
 }
 
 const CAMERA_X_RANGE = { min: -250, max: 250 };
-document.addEventListener('mousemove', (event) => {
-  const normalizedX = (event.clientX / window.innerWidth) * 2 - 1; // Normalize to [-1, 1]
-  
+function handleMovement(x) {
+  const normalizedX = (x / window.innerWidth) * 2 - 1; // Normalize to [-1, 1]
   const mappedX = lerp(CAMERA_X_RANGE.min, CAMERA_X_RANGE.max, (normalizedX + 1) / 2);
-
-  
-  camera.position.set(mappedX, 500, 1000); 
+  camera.position.set(mappedX, 500, 1000);
   camera.lookAt(new THREE.Vector3());
+}
+
+// Mouse move event
+document.addEventListener('mousemove', (event) => {
+  handleMovement(event.clientX);
+});
+
+// Touch move event
+document.addEventListener('touchmove', (event) => {
+  if (event.touches.length > 0) {
+    handleMovement(event.touches[0].clientX);
+  }
 });
 
 
@@ -311,7 +334,7 @@ const init = () => {
   resizeWindow();
   on();
 
-  renderer.setClearColor(0xeeeeee, 1.0);
+  renderer.setClearColor(0x000000, 1.0);
   camera.position.set(250, 500, 1000);
   camera.lookAt(new THREE.Vector3());
 
