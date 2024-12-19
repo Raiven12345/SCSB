@@ -19,21 +19,20 @@ body, html {
 
 
 /* Full-screen WebGL Canvas */
-canvas {
+#canvas-webgl {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1; /* Below the text content */
-  background-color: black;
-}
-
-/* Overlay content on top of the canvas */
-.container {
-  position: relative;
   z-index: 2;
-  padding: 2rem;
+}
+/* Overlay content on top of the canvas */
+#container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* White text for better contrast */
